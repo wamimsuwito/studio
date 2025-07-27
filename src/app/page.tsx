@@ -1,108 +1,92 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Menu, Grid } from 'lucide-react';
-import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { Lock, User } from 'lucide-react';
 
-export default function HomePage() {
-  const [currentDate, setCurrentDate] = useState('');
-  const [currentTime, setCurrentTime] = useState('');
+export default function LoginPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const now = new Date();
-    // Format date to "27 July 2025"
-    setCurrentDate(now.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }));
-    // Update time every second
-    const interval = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }).replace(/\./g, ':'));
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      if (
+        (username === 'admin' && password === 'admin') ||
+        (username === 'oprator' && password === '1')
+      ) {
+        toast({
+          title: 'Login Berhasil',
+          description: 'Anda akan diarahkan ke dashboard.',
+        });
+        router.push('/dashboard');
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Login Gagal',
+          description: 'Nama pengguna atau kata sandi salah.',
+        });
+        setIsLoading(false);
+      }
     }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-200 dark:bg-gray-800">
-      <div className="relative flex flex-col h-screen w-full max-w-sm bg-background font-sans shadow-2xl overflow-hidden">
-        <header className="py-4 px-6 text-center">
-          <h1 className="text-xl font-bold tracking-widest text-muted-foreground">DASHBOARD</h1>
-        </header>
-
-        <main className="flex-grow flex flex-col items-center px-4 space-y-4 overflow-hidden">
-          <Card className="w-full shadow-lg rounded-2xl flex-shrink-0">
-            <CardContent className="p-6 text-center">
-              <p className="text-2xl font-bold text-red-500">FRP - 0007</p>
-              <p className="text-lg font-bold text-primary mt-1">EZRA WAMIN HUTABARAT</p>
-              <p className="text-sm text-gray-500">KADEPT. TEKNIK</p>
-              <p className="text-sm text-gray-500 mt-2">{currentDate}</p>
-
-              <div className="flex justify-around mt-4 text-sm">
-                <div>
-                  <p className="font-bold text-green-500">{currentTime}</p>
-                  <p className="text-gray-500">Absen Masuk</p>
-                </div>
-                <div>
-                  <p className="font-bold text-orange-400">00:00:00</p>
-                  <p className="text-gray-500">Absen Pulang</p>
-                </div>
-                <div>
-                  <p className="font-bold text-gray-600">0 Menit</p>
-                  <p className="text-gray-500">Keterlambatan</p>
+      <div className="relative flex flex-col justify-center h-screen w-full max-w-sm bg-background font-sans shadow-2xl overflow-hidden p-6">
+        <Card className="w-full shadow-lg rounded-2xl border-none">
+          <CardHeader className="text-center p-6">
+            <CardTitle className="text-3xl font-bold text-primary tracking-wider">MASUK</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="username">Nama Pengguna</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="Masukkan nama pengguna"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    className="pl-10"
+                  />
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="w-full flex-grow shadow-lg rounded-t-2xl">
-              <Tabs defaultValue="info" className="w-full h-full flex flex-col">
-                  <CardContent className="p-4 flex-grow flex flex-col">
-                       <TabsList className="grid w-full grid-cols-2 bg-transparent p-0 h-auto">
-                          <TabsTrigger value="info" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:rounded-l-full data-[state=active]:rounded-r-none rounded-l-full rounded-r-none flex-grow h-12 text-lg !shadow-none data-[state=inactive]:bg-gray-200">INFO</TabsTrigger>
-                          <TabsTrigger value="detail" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:rounded-r-full data-[state=active]:rounded-l-none rounded-r-full rounded-l-none flex-grow h-12 text-lg !shadow-none data-[state=inactive]:bg-gray-200">Detail</TabsTrigger>
-                      </TabsList>
-                      <div className="flex-grow flex flex-col items-center justify-center pt-4 overflow-hidden">
-                          <TabsContent value="info" className="flex-grow flex flex-col items-center justify-center w-full">
-                              <div className="relative w-36 h-36 mb-4">
-                                  <Image src="https://placehold.co/400x400.png" alt="Folder" layout="fill" objectFit="contain" data-ai-hint="folder file" />
-                              </div>
-                              <p className="text-gray-400">Upps!! Belum Ada Data</p>
-                          </TabsContent>
-                          <TabsContent value="detail" className="flex-grow flex items-center justify-center">
-                              <p className="text-gray-400">Detail informasi akan ditampilkan di sini.</p>
-                          </TabsContent>
-                      </div>
-                  </CardContent>
-              </Tabs>
-          </Card>
-        </main>
-        
-        <footer className="w-full bg-background flex justify-center items-center p-2 text-white flex-shrink-0">
-            <div className="w-full flex justify-around items-center max-w-xs">
-                <Button variant="ghost" className="text-white">
-                  <Menu size={28} />
-                </Button>
-                <Link href="/absen">
-                  <Button variant="ghost" size="icon" className="bg-accent text-white rounded-full w-16 h-16 shadow-lg hover:bg-accent/90">
-                      <span className="text-4xl font-bold">A</span>
-                  </Button>
-                </Link>
-                <Button variant="ghost" className="text-white">
-                  <Grid size={28} />
-                </Button>
-            </div>
-        </footer>
+              <div className="space-y-2">
+                <Label htmlFor="password">Kata Sandi</Label>
+                 <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Masukkan kata sandi"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <Button type="submit" className="w-full !mt-10 h-12 text-lg rounded-full" disabled={isLoading}>
+                {isLoading ? 'Memproses...' : 'Masuk'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
