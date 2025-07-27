@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Menu, Grid, Home as HomeIcon } from 'lucide-react';
+import { Menu, Grid } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -103,7 +103,7 @@ export default function HomePage() {
                 <div className="relative">
                    <Link href="/absen" onClick={handleAbsenClick}>
                     <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 shadow-lg">
-                        <HomeIcon size={40} className="font-bold" />
+                        <span className="text-4xl font-bold">A</span>
                     </Button>
                   </Link>
                 </div>
