@@ -35,15 +35,10 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-
-interface Lokasi {
-  id: number;
-  nama: string;
-  detail: string;
-}
+import { useLokasi, type Lokasi } from '@/context/LokasiContext';
 
 export default function ManajemenLokasiPage() {
-  const [lokasiList, setLokasiList] = useState<Lokasi[]>([]);
+  const { lokasiList, addLokasi, updateLokasi, deleteLokasi } = useLokasi();
   const [namaLokasi, setNamaLokasi] = useState('');
   const [detailLokasi, setDetailLokasi] = useState('');
   const [editingLokasiId, setEditingLokasiId] = useState<number | null>(null);
@@ -61,23 +56,14 @@ export default function ManajemenLokasiPage() {
     }
 
     if (editingLokasiId !== null) {
-      // Update existing lokasi
-      setLokasiList(
-        lokasiList.map((lokasi) =>
-          lokasi.id === editingLokasiId
-            ? { ...lokasi, nama: namaLokasi, detail: detailLokasi }
-            : lokasi
-        )
-      );
+      updateLokasi(editingLokasiId, { nama: namaLokasi, detail: detailLokasi });
       toast({ title: 'Berhasil', description: 'Data lokasi berhasil diperbarui.' });
     } else {
-      // Add new lokasi
-      const newLokasi: Lokasi = {
-        id: Date.now(),
+      const newLokasi: Omit<Lokasi, 'id'> = {
         nama: namaLokasi,
         detail: detailLokasi,
       };
-      setLokasiList([...lokasiList, newLokasi]);
+      addLokasi(newLokasi);
       toast({ title: 'Berhasil', description: 'Lokasi baru berhasil ditambahkan.' });
     }
     
@@ -91,7 +77,7 @@ export default function ManajemenLokasiPage() {
   };
 
   const handleDelete = (id: number) => {
-    setLokasiList(lokasiList.filter((lokasi) => lokasi.id !== id));
+    deleteLokasi(id);
     toast({
         variant: 'destructive',
         title: 'Dihapus',

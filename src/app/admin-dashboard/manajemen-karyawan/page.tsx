@@ -19,8 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useLokasi } from '@/context/LokasiContext';
 
 export default function ManajemenKaryawanPage() {
+  const { lokasiList } = useLokasi();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         <Card>
@@ -69,10 +72,17 @@ export default function ManajemenKaryawanPage() {
                     <SelectValue placeholder="Pilih lokasi kerja" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="kantor-pusat">Kantor Pusat</SelectItem>
-                    <SelectItem value="cabang-a">Cabang A</SelectItem>
-                    <SelectItem value="cabang-b">Cabang B</SelectItem>
-                    <SelectItem value="proyek-x">Proyek X</SelectItem>
+                    {lokasiList.length > 0 ? (
+                      lokasiList.map((lokasi) => (
+                        <SelectItem key={lokasi.id} value={lokasi.id.toString()}>
+                          {lokasi.nama}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-location" disabled>
+                        Belum ada lokasi, tambahkan di Manajemen Lokasi.
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
