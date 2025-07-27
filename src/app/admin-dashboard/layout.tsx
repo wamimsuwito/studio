@@ -4,6 +4,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -12,9 +13,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Building, MapPin, Wrench } from 'lucide-react';
+import { Building, LogOut, MapPin, Wrench } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LokasiProvider } from '@/context/LokasiContext';
 import { KaryawanProvider } from '@/context/KaryawanContext';
 
@@ -24,6 +25,12 @@ export default function AdminDashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Di sini Anda bisa menambahkan logika logout, seperti menghapus token
+    router.push('/');
+  };
 
   return (
     <LokasiProvider>
@@ -63,6 +70,16 @@ export default function AdminDashboardLayout({
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarContent>
+            <SidebarFooter>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={handleLogout} tooltip="Logout">
+                    <LogOut />
+                    Logout
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarFooter>
           </Sidebar>
           <SidebarInset>
             <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6">
