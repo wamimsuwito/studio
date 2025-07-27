@@ -22,7 +22,7 @@ import {
 
 export default function ManajemenKaryawanPage() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         <Card>
           <CardHeader>
             <CardTitle>Tambah Karyawan Baru</CardTitle>
@@ -82,7 +82,7 @@ export default function ManajemenKaryawanPage() {
                 <CardDescription>Daftar karyawan yang terdaftar dalam sistem.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
                     <p className="text-lg">Belum ada data karyawan.</p>
                     <p className="text-sm">Silakan tambahkan karyawan baru menggunakan formulir di sebelah kiri.</p>
                 </div>

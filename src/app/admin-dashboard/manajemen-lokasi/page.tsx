@@ -22,6 +22,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Pencil, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 interface Lokasi {
   id: number;
@@ -33,30 +46,75 @@ export default function ManajemenLokasiPage() {
   const [lokasiList, setLokasiList] = useState<Lokasi[]>([]);
   const [namaLokasi, setNamaLokasi] = useState('');
   const [detailLokasi, setDetailLokasi] = useState('');
+  const [editingLokasiId, setEditingLokasiId] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const handleSimpanLokasi = (e: React.FormEvent) => {
     e.preventDefault();
     if (namaLokasi.trim() === '' || detailLokasi.trim() === '') {
-      // You can add a toast notification here for better UX
+      toast({
+        variant: 'destructive',
+        title: 'Input Tidak Lengkap',
+        description: 'Nama dan detail lokasi tidak boleh kosong.',
+      });
       return;
     }
-    const newLokasi: Lokasi = {
-      id: Date.now(),
-      nama: namaLokasi,
-      detail: detailLokasi,
-    };
-    setLokasiList([...lokasiList, newLokasi]);
+
+    if (editingLokasiId !== null) {
+      // Update existing lokasi
+      setLokasiList(
+        lokasiList.map((lokasi) =>
+          lokasi.id === editingLokasiId
+            ? { ...lokasi, nama: namaLokasi, detail: detailLokasi }
+            : lokasi
+        )
+      );
+      toast({ title: 'Berhasil', description: 'Data lokasi berhasil diperbarui.' });
+    } else {
+      // Add new lokasi
+      const newLokasi: Lokasi = {
+        id: Date.now(),
+        nama: namaLokasi,
+        detail: detailLokasi,
+      };
+      setLokasiList([...lokasiList, newLokasi]);
+      toast({ title: 'Berhasil', description: 'Lokasi baru berhasil ditambahkan.' });
+    }
+    
+    resetForm();
+  };
+
+  const handleEdit = (lokasi: Lokasi) => {
+    setEditingLokasiId(lokasi.id);
+    setNamaLokasi(lokasi.nama);
+    setDetailLokasi(lokasi.detail);
+  };
+
+  const handleDelete = (id: number) => {
+    setLokasiList(lokasiList.filter((lokasi) => lokasi.id !== id));
+    toast({
+        variant: 'destructive',
+        title: 'Dihapus',
+        description: 'Data lokasi telah dihapus.'
+    });
+  };
+  
+  const resetForm = () => {
+    setEditingLokasiId(null);
     setNamaLokasi('');
     setDetailLokasi('');
   };
 
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
       <Card>
         <CardHeader>
-          <CardTitle>Tambah Lokasi Baru</CardTitle>
+          <CardTitle>{editingLokasiId ? 'Edit Lokasi' : 'Tambah Lokasi Baru'}</CardTitle>
           <CardDescription>
-            Isi formulir di bawah ini untuk menambahkan lokasi baru ke sistem.
+            {editingLokasiId
+                ? 'Perbarui detail lokasi di bawah ini.'
+                : 'Isi formulir di bawah ini untuk menambahkan lokasi baru.'}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSimpanLokasi}>
@@ -82,8 +140,11 @@ export default function ManajemenLokasiPage() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="border-t px-6 py-4">
-            <Button type="submit">Simpan Lokasi</Button>
+          <CardFooter className="border-t px-6 py-4 flex justify-between">
+            <Button type="submit">{editingLokasiId ? 'Update Lokasi' : 'Simpan Lokasi'}</Button>
+            {editingLokasiId && (
+                <Button variant="outline" onClick={resetForm}>Batal</Button>
+            )}
           </CardFooter>
         </form>
       </Card>
@@ -97,7 +158,7 @@ export default function ManajemenLokasiPage() {
         </CardHeader>
         <CardContent>
           {lokasiList.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
               <p className="text-lg">Belum ada data lokasi.</p>
               <p className="text-sm">
                 Silakan tambahkan lokasi baru menggunakan formulir di sebelah kiri.
@@ -109,6 +170,7 @@ export default function ManajemenLokasiPage() {
                 <TableRow>
                   <TableHead>Nama Lokasi</TableHead>
                   <TableHead>Detail</TableHead>
+                  <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -116,6 +178,32 @@ export default function ManajemenLokasiPage() {
                   <TableRow key={lokasi.id}>
                     <TableCell className="font-medium">{lokasi.nama}</TableCell>
                     <TableCell>{lokasi.detail}</TableCell>
+                    <TableCell className="text-right space-x-2">
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(lokasi)}>
+                            <Pencil className="w-4 h-4"/>
+                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                    <Trash2 className="w-4 h-4"/>
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Tindakan ini tidak dapat dibatalkan. Ini akan menghapus data lokasi secara permanen.
+                                </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(lokasi.id)} className="bg-destructive hover:bg-destructive/90">
+                                    Hapus
+                                </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
