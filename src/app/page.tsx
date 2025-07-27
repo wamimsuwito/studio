@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Menu, Grid, Home as HomeIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const [currentDate, setCurrentDate] = useState('');
   const [currentTime, setCurrentTime] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const now = new Date();
@@ -32,15 +34,20 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleAbsenClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    router.push('/absen');
+  };
+
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-background font-sans">
+    <div className="flex flex-col h-screen w-full bg-background font-sans">
       <header className="py-4 px-6 text-center">
         <h1 className="text-xl font-bold tracking-widest text-muted-foreground">DASHBOARD</h1>
       </header>
 
-      <main className="flex-grow flex flex-col items-center px-4 space-y-4">
-        <Card className="w-full max-w-md shadow-lg rounded-2xl">
+      <main className="flex-grow flex flex-col items-center px-4 space-y-4 overflow-hidden">
+        <Card className="w-full max-w-md shadow-lg rounded-2xl flex-shrink-0">
           <CardContent className="p-6 text-center">
             <p className="text-2xl font-bold text-red-500">FRP - 0007</p>
             <p className="text-lg font-bold text-primary mt-1">EZRA WAMIN HUTABARAT</p>
@@ -71,9 +78,9 @@ export default function HomePage() {
                         <TabsTrigger value="info" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:rounded-l-full data-[state=active]:rounded-r-none rounded-l-full rounded-r-none flex-grow h-12 text-lg !shadow-none data-[state=inactive]:bg-gray-200">INFO</TabsTrigger>
                         <TabsTrigger value="detail" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:rounded-r-full data-[state=active]:rounded-l-none rounded-r-full rounded-l-none flex-grow h-12 text-lg !shadow-none data-[state=inactive]:bg-gray-200">Detail</TabsTrigger>
                     </TabsList>
-                    <div className="flex-grow flex flex-col items-center justify-center pt-4">
+                    <div className="flex-grow flex flex-col items-center justify-center pt-4 overflow-hidden">
                         <TabsContent value="info" className="flex-grow flex flex-col items-center justify-center w-full">
-                            <div className="relative w-48 h-48 mb-4">
+                            <div className="relative w-36 h-36 mb-4">
                                 <Image src="https://placehold.co/400x400.png" alt="Folder" layout="fill" objectFit="contain" data-ai-hint="folder file" />
                             </div>
                             <p className="text-gray-400">Upps!! Belum Ada Data</p>
@@ -87,13 +94,13 @@ export default function HomePage() {
         </Card>
       </main>
       
-      <footer className="w-full bg-background flex justify-center items-center p-2 text-white sticky bottom-0">
+      <footer className="w-full bg-background flex justify-center items-center p-2 text-white flex-shrink-0">
           <div className="w-full max-w-sm flex justify-around items-center">
               <Button variant="ghost" className="text-white">
                 <Menu size={28} />
               </Button>
               <div className="relative">
-                 <Link href="/absen">
+                 <Link href="/absen" onClick={handleAbsenClick}>
                   <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 -translate-y-6 shadow-lg">
                       <HomeIcon size={40} className="font-bold" />
                   </Button>
