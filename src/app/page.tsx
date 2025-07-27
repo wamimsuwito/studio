@@ -102,7 +102,7 @@ export default function HomePage() {
                 </Button>
                 <div className="relative">
                    <Link href="/absen" onClick={handleAbsenClick}>
-                    <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 -translate-y-6 shadow-lg">
+                    <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 shadow-lg">
                         <HomeIcon size={40} className="font-bold" />
                     </Button>
                   </Link>
