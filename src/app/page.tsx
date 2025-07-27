@@ -94,7 +94,7 @@ export default function HomePage() {
                   <Menu size={28} />
                 </Button>
                 <Link href="/absen">
-                  <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 shadow-lg">
+                  <Button variant="ghost" size="icon" className="bg-accent text-white rounded-full w-16 h-16 shadow-lg hover:bg-accent/90">
                       <span className="text-4xl font-bold">A</span>
                   </Button>
                 </Link>
