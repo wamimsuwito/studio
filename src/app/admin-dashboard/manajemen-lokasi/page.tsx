@@ -145,24 +145,23 @@ export default function ManajemenLokasiPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {lokasiList.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
-              <p className="text-lg">Belum ada data lokasi.</p>
-              <p className="text-sm">
-                Silakan tambahkan lokasi baru menggunakan formulir di sebelah kiri.
-              </p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nama Lokasi</TableHead>
+                <TableHead>Detail</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lokasiList.length === 0 ? (
                 <TableRow>
-                  <TableHead>Nama Lokasi</TableHead>
-                  <TableHead>Detail</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
+                  <TableCell colSpan={3} className="h-24 text-center">
+                    Belum ada data lokasi.
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {lokasiList.map((lokasi) => (
+              ) : (
+                lokasiList.map((lokasi) => (
                   <TableRow key={lokasi.id}>
                     <TableCell className="font-medium">{lokasi.nama}</TableCell>
                     <TableCell>{lokasi.detail}</TableCell>
@@ -193,10 +192,10 @@ export default function ManajemenLokasiPage() {
                         </AlertDialog>
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

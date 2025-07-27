@@ -19,27 +19,30 @@ interface LokasiContextType {
 const LokasiContext = createContext<LokasiContextType | undefined>(undefined);
 
 export const LokasiProvider = ({ children }: { children: ReactNode }) => {
-  const [lokasiList, setLokasiList] = useState<Lokasi[]>(() => {
-    // Guard against SSR
-    if (typeof window === 'undefined') {
-      return [];
-    }
-    try {
-      const item = window.localStorage.getItem('lokasiList');
-      return item ? JSON.parse(item) : [];
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  });
+  const [lokasiList, setLokasiList] = useState<Lokasi[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     try {
-      window.localStorage.setItem('lokasiList', JSON.stringify(lokasiList));
+      const item = window.localStorage.getItem('lokasiList');
+      if (item) {
+        setLokasiList(JSON.parse(item));
+      }
     } catch (error) {
       console.error(error);
     }
-  }, [lokasiList]);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      try {
+        window.localStorage.setItem('lokasiList', JSON.stringify(lokasiList));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [lokasiList, isClient]);
 
 
   const addLokasi = (lokasi: Omit<Lokasi, 'id'>) => {
