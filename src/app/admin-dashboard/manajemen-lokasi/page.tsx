@@ -110,18 +110,20 @@ export default function ManajemenLokasiPage() {
                 <Label htmlFor="nama-lokasi">Nama Lokasi</Label>
                 <Input
                   id="nama-lokasi"
-                  placeholder="Contoh: Kantor Cabang Utama"
+                  placeholder="Contoh: KANTOR CABANG UTAMA"
                   value={namaLokasi}
-                  onChange={(e) => setNamaLokasi(e.target.value)}
+                  onChange={(e) => setNamaLokasi(e.target.value.toUpperCase())}
+                  className="uppercase"
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="detail-lokasi">Detail Lokasi</Label>
                 <Textarea
                   id="detail-lokasi"
-                  placeholder="Masukkan alamat lengkap atau koordinat lokasi..."
+                  placeholder="MASUKKAN ALAMAT LENGKAP ATAU KOORDINAT LOKASI..."
                   value={detailLokasi}
-                  onChange={(e) => setDetailLokasi(e.target.value)}
+                  onChange={(e) => setDetailLokasi(e.target.value.toUpperCase())}
+                  className="uppercase"
                 />
               </div>
             </div>
@@ -172,7 +174,7 @@ export default function ManajemenLokasiPage() {
                             <AlertDialogTrigger asChild>
                                 <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
                                     <Trash2 className="w-4 h-4"/>
-                                </Button>
+                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>

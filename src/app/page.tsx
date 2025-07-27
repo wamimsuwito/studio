@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -22,13 +23,13 @@ export default function LoginPage() {
 
     // Simulate API call
     setTimeout(() => {
-      if (username === 'admin' && password === 'admin') {
+      if (username.toLowerCase() === 'admin' && password === 'admin') {
         toast({
           title: 'Login Berhasil',
           description: 'Anda akan diarahkan ke dashboard admin.',
         });
         router.push('/admin-dashboard');
-      } else if (username === 'oprator' && password === '1') {
+      } else if (username.toLowerCase() === 'oprator' && password === '1') {
         toast({
           title: 'Login Berhasil',
           description: 'Anda akan diarahkan ke dashboard.',
@@ -63,9 +64,9 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Masukkan nama pengguna"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => setUsername(e.target.value.toUpperCase())}
                     required
-                    className="pl-10"
+                    className="pl-10 uppercase"
                   />
                 </div>
               </div>

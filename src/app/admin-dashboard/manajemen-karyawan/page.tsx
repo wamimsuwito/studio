@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -23,6 +24,8 @@ import { useLokasi } from '@/context/LokasiContext';
 
 export default function ManajemenKaryawanPage() {
   const { lokasiList } = useLokasi();
+  const [namaKaryawan, setNamaKaryawan] = useState('');
+  const [nik, setNik] = useState('');
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
@@ -37,11 +40,23 @@ export default function ManajemenKaryawanPage() {
             <form className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="nama-karyawan">Nama Karyawan</Label>
-                <Input id="nama-karyawan" placeholder="Contoh: John Doe" />
+                <Input 
+                  id="nama-karyawan" 
+                  placeholder="Contoh: JOHN DOE" 
+                  value={namaKaryawan}
+                  onChange={(e) => setNamaKaryawan(e.target.value.toUpperCase())}
+                  className="uppercase"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="nik">NIK</Label>
-                <Input id="nik" placeholder="Contoh: 1234567890" />
+                <Input 
+                  id="nik" 
+                  placeholder="Contoh: 1234567890" 
+                  value={nik}
+                  onChange={(e) => setNik(e.target.value.toUpperCase())}
+                  className="uppercase"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="jabatan">Jabatan</Label>
