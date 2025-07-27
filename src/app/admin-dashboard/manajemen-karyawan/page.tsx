@@ -28,6 +28,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Pencil, Trash2 } from 'lucide-react';
 import { useLokasi } from '@/context/LokasiContext';
 import { useKaryawan } from '@/context/KaryawanContext';
 import { useToast } from '@/hooks/use-toast';
@@ -35,9 +47,10 @@ import type { Karyawan } from '@/context/KaryawanContext';
 
 export default function ManajemenKaryawanPage() {
   const { lokasiList } = useLokasi();
-  const { karyawanList, addKaryawan } = useKaryawan();
+  const { karyawanList, addKaryawan, updateKaryawan, deleteKaryawan } = useKaryawan();
   const { toast } = useToast();
 
+  const [editingKaryawanId, setEditingKaryawanId] = useState<number | null>(null);
   const [namaKaryawan, setNamaKaryawan] = useState('');
   const [nik, setNik] = useState('');
   const [jabatan, setJabatan] = useState('');
@@ -46,6 +59,7 @@ export default function ManajemenKaryawanPage() {
   const [password, setPassword] = useState('');
 
   const resetForm = () => {
+    setEditingKaryawanId(null);
     setNamaKaryawan('');
     setNik('');
     setJabatan('');
@@ -56,30 +70,68 @@ export default function ManajemenKaryawanPage() {
 
   const handleSimpanKaryawan = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!namaKaryawan || !nik || !jabatan || !lokasiId || !username || !password) {
+    if (!namaKaryawan || !nik || !jabatan || !lokasiId || !username) {
       toast({
         variant: 'destructive',
         title: 'Input Tidak Lengkap',
-        description: 'Semua kolom harus diisi untuk menambah karyawan.',
+        description: 'Semua kolom kecuali password harus diisi.',
+      });
+      return;
+    }
+    
+    // Password is required only when creating a new user, not necessarily when updating
+    if (!editingKaryawanId && !password) {
+       toast({
+        variant: 'destructive',
+        title: 'Input Tidak Lengkap',
+        description: 'Password harus diisi untuk karyawan baru.',
       });
       return;
     }
 
-    const newKaryawan: Omit<Karyawan, 'id'> = {
+    const karyawanData = {
       nama: namaKaryawan,
       nik: nik,
       jabatan: jabatan,
       lokasiId: parseInt(lokasiId, 10),
       username: username,
-      password: password,
+      ...(password && { password }), // Only include password if it's not empty
     };
 
-    addKaryawan(newKaryawan);
-    toast({
-      title: 'Berhasil',
-      description: 'Karyawan baru berhasil ditambahkan.',
-    });
+    if (editingKaryawanId) {
+        updateKaryawan(editingKaryawanId, karyawanData);
+        toast({
+          title: 'Berhasil',
+          description: 'Data karyawan berhasil diperbarui.',
+        });
+    } else {
+        addKaryawan(karyawanData as Omit<Karyawan, 'id'>);
+        toast({
+          title: 'Berhasil',
+          description: 'Karyawan baru berhasil ditambahkan.',
+        });
+    }
+
     resetForm();
+  };
+
+  const handleEdit = (karyawan: Karyawan) => {
+    setEditingKaryawanId(karyawan.id);
+    setNamaKaryawan(karyawan.nama);
+    setNik(karyawan.nik);
+    setJabatan(karyawan.jabatan);
+    setLokasiId(karyawan.lokasiId.toString());
+    setUsername(karyawan.username);
+    setPassword(''); // Clear password field for security
+  };
+
+  const handleDelete = (id: number) => {
+    deleteKaryawan(id);
+    toast({
+        variant: 'destructive',
+        title: 'Dihapus',
+        description: 'Data karyawan telah dihapus.'
+    });
   };
   
   const getLokasiName = (id: number) => {
@@ -90,9 +142,9 @@ export default function ManajemenKaryawanPage() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
       <Card>
         <CardHeader>
-          <CardTitle>Tambah Karyawan Baru</CardTitle>
+          <CardTitle>{editingKaryawanId ? 'Edit Karyawan' : 'Tambah Karyawan Baru'}</CardTitle>
           <CardDescription>
-            Isi formulir di bawah ini untuk menambahkan karyawan baru ke sistem.
+            {editingKaryawanId ? 'Perbarui detail karyawan di bawah ini.' : 'Isi formulir di bawah ini untuk menambahkan karyawan baru ke sistem.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -175,15 +227,18 @@ export default function ManajemenKaryawanPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Masukkan password untuk login"
+                placeholder={editingKaryawanId ? "Kosongkan jika tidak ingin ganti" : "Masukkan password untuk login"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </form>
         </CardContent>
-        <CardFooter className="border-t px-6 py-4">
-          <Button type="submit" form="karyawan-form">Simpan</Button>
+        <CardFooter className="border-t px-6 py-4 flex justify-between">
+          <Button type="submit" form="karyawan-form">{editingKaryawanId ? 'Update' : 'Simpan'}</Button>
+           {editingKaryawanId && (
+                <Button variant="outline" onClick={resetForm}>Batal</Button>
+            )}
         </CardFooter>
       </Card>
 
@@ -204,6 +259,7 @@ export default function ManajemenKaryawanPage() {
                             <TableHead>Jabatan</TableHead>
                             <TableHead>Username</TableHead>
                             <TableHead>Lokasi</TableHead>
+                            <TableHead className="text-right">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -214,6 +270,32 @@ export default function ManajemenKaryawanPage() {
                                 <TableCell>{karyawan.jabatan}</TableCell>
                                 <TableCell>{karyawan.username}</TableCell>
                                 <TableCell>{getLokasiName(karyawan.lokasiId)}</TableCell>
+                                <TableCell className="text-right space-x-2">
+                                    <Button variant="ghost" size="icon" onClick={() => handleEdit(karyawan)}>
+                                        <Pencil className="w-4 h-4"/>
+                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                                <Trash2 className="w-4 h-4"/>
+                                             </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                            <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Tindakan ini tidak dapat dibatalkan. Ini akan menghapus data karyawan secara permanen.
+                                            </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDelete(karyawan.id)} className="bg-destructive hover:bg-destructive/90">
+                                                Hapus
+                                            </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
