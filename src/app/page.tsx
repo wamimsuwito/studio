@@ -7,12 +7,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Menu, Grid } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const [currentDate, setCurrentDate] = useState('');
   const [currentTime, setCurrentTime] = useState('');
-  const router = useRouter();
 
   useEffect(() => {
     const now = new Date();
@@ -33,11 +31,6 @@ export default function HomePage() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const handleAbsenClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    router.push('/absen');
-  };
 
 
   return (
@@ -100,13 +93,11 @@ export default function HomePage() {
                 <Button variant="ghost" className="text-white">
                   <Menu size={28} />
                 </Button>
-                <div className="relative">
-                   <Link href="/absen" onClick={handleAbsenClick}>
-                    <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 shadow-lg">
-                        <span className="text-4xl font-bold">A</span>
-                    </Button>
-                  </Link>
-                </div>
+                <Link href="/absen">
+                  <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 shadow-lg">
+                      <span className="text-4xl font-bold">A</span>
+                  </Button>
+                </Link>
                 <Button variant="ghost" className="text-white">
                   <Grid size={28} />
                 </Button>
