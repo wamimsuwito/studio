@@ -87,20 +87,22 @@ export default function HomePage() {
         </Card>
       </main>
       
-      <footer className="w-full bg-background flex justify-around items-center p-2 text-white sticky bottom-0">
-          <Button variant="ghost" className="text-white">
-            <Menu size={28} />
-          </Button>
-          <div className="relative">
-             <Link href="/absen">
-              <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 -translate-y-6 shadow-lg">
-                  <HomeIcon size={40} className="font-bold" />
+      <footer className="w-full bg-background flex justify-center items-center p-2 text-white sticky bottom-0">
+          <div className="w-full max-w-sm flex justify-around items-center">
+              <Button variant="ghost" className="text-white">
+                <Menu size={28} />
               </Button>
-            </Link>
+              <div className="relative">
+                 <Link href="/absen">
+                  <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 -translate-y-6 shadow-lg">
+                      <HomeIcon size={40} className="font-bold" />
+                  </Button>
+                </Link>
+              </div>
+              <Button variant="ghost" className="text-white">
+                <Grid size={28} />
+              </Button>
           </div>
-          <Button variant="ghost" className="text-white">
-            <Grid size={28} />
-          </Button>
       </footer>
     </div>
   );
