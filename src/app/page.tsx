@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,10 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Lock, User } from 'lucide-react';
+import { KaryawanProvider, useKaryawan } from '@/context/KaryawanContext';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const { toast } = useToast();
+  const { karyawanList } = useKaryawan();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,20 +23,21 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
     setTimeout(() => {
-      if (username.toLowerCase() === 'admin' && password === 'admin') {
+      const user = karyawanList.find(
+        (k) => k.username === username && k.password === password
+      );
+
+      if (user) {
         toast({
           title: 'Login Berhasil',
-          description: 'Anda akan diarahkan ke dashboard admin.',
+          description: `Selamat datang, ${user.nama}.`,
         });
-        router.push('/admin-dashboard');
-      } else if (username.toLowerCase() === 'oprator' && password === '1') {
-        toast({
-          title: 'Login Berhasil',
-          description: 'Anda akan diarahkan ke dashboard.',
-        });
-        router.push('/dashboard');
+        if (user.jabatan.toLowerCase() === 'admin') {
+          router.push('/admin-dashboard');
+        } else {
+          router.push('/dashboard');
+        }
       } else {
         toast({
           variant: 'destructive',
@@ -64,9 +67,9 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Masukkan nama pengguna"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value.toUpperCase())}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="pl-10 uppercase"
+                    className="pl-10"
                   />
                 </div>
               </div>
@@ -94,4 +97,13 @@ export default function LoginPage() {
       </div>
     </div>
   );
+}
+
+
+export default function LoginPage() {
+  return (
+    <KaryawanProvider>
+      <LoginPageContent />
+    </KaryawanProvider>
+  )
 }

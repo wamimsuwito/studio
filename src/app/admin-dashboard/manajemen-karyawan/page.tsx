@@ -42,17 +42,21 @@ export default function ManajemenKaryawanPage() {
   const [nik, setNik] = useState('');
   const [jabatan, setJabatan] = useState('');
   const [lokasiId, setLokasiId] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const resetForm = () => {
     setNamaKaryawan('');
     setNik('');
     setJabatan('');
     setLokasiId('');
+    setUsername('');
+    setPassword('');
   };
 
   const handleSimpanKaryawan = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!namaKaryawan || !nik || !jabatan || !lokasiId) {
+    if (!namaKaryawan || !nik || !jabatan || !lokasiId || !username || !password) {
       toast({
         variant: 'destructive',
         title: 'Input Tidak Lengkap',
@@ -66,6 +70,8 @@ export default function ManajemenKaryawanPage() {
       nik: nik,
       jabatan: jabatan,
       lokasiId: parseInt(lokasiId, 10),
+      username: username,
+      password: password,
     };
 
     addKaryawan(newKaryawan);
@@ -130,6 +136,7 @@ export default function ManajemenKaryawanPage() {
                   <SelectItem value="ADMIN BP">Admin BP</SelectItem>
                   <SelectItem value="ADMIN LOGISTIK">Admin Logistik</SelectItem>
                   <SelectItem value="ADMIN QC">Admin QC</SelectItem>
+                   <SelectItem value="ADMIN">Admin</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -154,6 +161,25 @@ export default function ManajemenKaryawanPage() {
                 </SelectContent>
               </Select>
             </div>
+             <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                placeholder="Masukkan username untuk login"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Masukkan password untuk login"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </form>
         </CardContent>
         <CardFooter className="border-t px-6 py-4">
@@ -176,6 +202,7 @@ export default function ManajemenKaryawanPage() {
                             <TableHead>Nama</TableHead>
                             <TableHead>NIK</TableHead>
                             <TableHead>Jabatan</TableHead>
+                            <TableHead>Username</TableHead>
                             <TableHead>Lokasi</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -185,6 +212,7 @@ export default function ManajemenKaryawanPage() {
                                 <TableCell className="font-medium">{karyawan.nama}</TableCell>
                                 <TableCell>{karyawan.nik}</TableCell>
                                 <TableCell>{karyawan.jabatan}</TableCell>
+                                <TableCell>{karyawan.username}</TableCell>
                                 <TableCell>{getLokasiName(karyawan.lokasiId)}</TableCell>
                             </TableRow>
                         ))}

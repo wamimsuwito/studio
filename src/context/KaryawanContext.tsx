@@ -9,6 +9,8 @@ export interface Karyawan {
   nik: string;
   jabatan: string;
   lokasiId: number;
+  username: string;
+  password?: string; // Password is now optional in the interface
 }
 
 interface KaryawanContextType {
@@ -30,6 +32,18 @@ export const KaryawanProvider = ({ children }: { children: ReactNode }) => {
       const item = window.localStorage.getItem('karyawanList');
       if (item) {
         setKaryawanList(JSON.parse(item));
+      } else {
+        // Add default admin user if no list exists
+        const adminUser: Karyawan = {
+          id: 1,
+          nama: 'ADMIN',
+          nik: '0000',
+          jabatan: 'ADMIN',
+          lokasiId: 0,
+          username: 'admin',
+          password: 'admin'
+        };
+        setKaryawanList([adminUser]);
       }
     } catch (error) {
       console.error(error);
