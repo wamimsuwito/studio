@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Menu, Grid, Home as HomeIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HomePage() {
   const [currentDate, setCurrentDate] = useState('');
@@ -33,7 +34,7 @@ export default function HomePage() {
 
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background font-sans">
+    <div className="flex flex-col min-h-screen w-full bg-background font-sans">
       <header className="py-4 px-6 text-center">
         <h1 className="text-xl font-bold tracking-widest text-muted-foreground">DASHBOARD</h1>
       </header>
@@ -86,14 +87,16 @@ export default function HomePage() {
         </Card>
       </main>
       
-      <footer className="w-full bg-background flex justify-around items-center p-2 text-white">
+      <footer className="w-full bg-background flex justify-around items-center p-2 text-white sticky bottom-0">
           <Button variant="ghost" className="text-white">
             <Menu size={28} />
           </Button>
           <div className="relative">
-             <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 -translate-y-6 shadow-lg">
-                <HomeIcon size={40} className="font-bold" />
-             </Button>
+             <Link href="/absen">
+              <Button variant="ghost" size="icon" className="bg-white text-accent rounded-full w-16 h-16 -translate-y-6 shadow-lg">
+                  <HomeIcon size={40} className="font-bold" />
+              </Button>
+            </Link>
           </div>
           <Button variant="ghost" className="text-white">
             <Grid size={28} />
