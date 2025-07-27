@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { verifyFace } from '@/app/actions';
+import type { VerifyFaceAttendanceOutput } from '@/ai/flows/verify-face-attendance';
 
 export default function AbsenPage() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -71,7 +71,18 @@ export default function AbsenPage() {
             const photoDataUri = canvas.toDataURL('image/jpeg');
 
             try {
-                const result = await verifyFace({ photoDataUri });
+                const response = await fetch('/api/verify-face', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ photoDataUri })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+                
+                const result: VerifyFaceAttendanceOutput = await response.json();
+
                 if (result.faceDetected) {
                     toast({
                         title: 'Verifikasi Berhasil',
@@ -86,7 +97,7 @@ export default function AbsenPage() {
                     });
                 }
             } catch (error) {
-                console.error("AI flow error:", error);
+                console.error("API call error:", error);
                 toast({
                     variant: 'destructive',
                     title: 'Terjadi Kesalahan',
