@@ -33,11 +33,11 @@ const verifyFaceAttendancePrompt = ai.definePrompt({
   name: 'verifyFaceAttendancePrompt',
   input: {schema: VerifyFaceAttendanceInputSchema},
   output: {schema: VerifyFaceAttendanceOutputSchema},
-  prompt: `You are an AI that analyzes images to detect human faces.
+  prompt: `Anda adalah AI yang menganalisis gambar untuk mendeteksi wajah manusia.
 
-  Analyze the following image and determine if it contains a human face.  If a human face is present, set faceDetected to true.  If no face is present, set faceDetected to false.
+  Analisis gambar berikut dan tentukan apakah gambar tersebut berisi wajah manusia. Jika ada wajah manusia, atur faceDetected ke true. Jika tidak ada wajah, atur faceDetected ke false.
 
-  Image: {{media url=photoDataUri}}
+  Gambar: {{media url=photoDataUri}}
   `,
 });
 

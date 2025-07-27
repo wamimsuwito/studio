@@ -40,7 +40,7 @@ export default function Home() {
 
     const reader = new FileReader();
     reader.onerror = () => {
-      setError("Failed to read photo.");
+      setError("Gagal membaca foto.");
       setStatus('error');
     };
     reader.onload = async (e) => {
@@ -52,10 +52,10 @@ export default function Home() {
         ]);
 
         if (!verificationResult?.faceDetected) {
-          throw new Error("No face detected. Please ensure your face is clear and try again.");
+          throw new Error("Wajah tidak terdeteksi. Harap pastikan wajah Anda terlihat jelas dan coba lagi.");
         }
         if (!locationResult) {
-          throw new Error("Could not retrieve location. Please enable location services.");
+          throw new Error("Tidak dapat mengambil lokasi. Harap aktifkan layanan lokasi.");
         }
         
         setAttendanceData({
@@ -65,7 +65,7 @@ export default function Home() {
         });
         setStatus('success');
       } catch (err: any) {
-        setError(err.message || 'An unexpected error occurred.');
+        setError(err.message || 'Terjadi kesalahan tak terduga.');
         setStatus('error');
       }
     };
@@ -96,8 +96,8 @@ export default function Home() {
   const handleSendEmail = () => {
     if (!attendanceData) return;
     const { location, timestamp } = attendanceData;
-    const subject = `Attendance Report - ${timestamp.toLocaleDateString()}`;
-    const body = `Hello,\n\nThis is my attendance report.\n\nTimestamp: ${timestamp.toLocaleString()}\nLocation: ${location.latitude.toFixed(5)}, ${location.longitude.toFixed(5)}\nGoogle Maps Link: https://www.google.com/maps?q=${location.latitude},${location.longitude}\n\nRegards,`;
+    const subject = `Laporan Kehadiran - ${timestamp.toLocaleDateString()}`;
+    const body = `Halo,\n\nIni adalah laporan kehadiran saya.\n\nCap Waktu: ${timestamp.toLocaleString()}\nLokasi: ${location.latitude.toFixed(5)}, ${location.longitude.toFixed(5)}\nTautan Google Maps: https://www.google.com/maps?q=${location.latitude},${location.longitude}\n\nTerima kasih,`;
     const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.trim())}`;
     window.location.href = mailtoLink;
   };
@@ -108,7 +108,7 @@ export default function Home() {
         return (
           <div className="flex flex-col items-center justify-center text-center p-10 space-y-4 h-64">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            <p className="text-muted-foreground">Verifying your attendance...</p>
+            <p className="text-muted-foreground">Memverifikasi kehadiran Anda...</p>
           </div>
         );
       case 'success':
@@ -117,12 +117,12 @@ export default function Home() {
           <>
             <CardContent className="space-y-4">
               <div className="aspect-square w-full relative overflow-hidden rounded-lg border bg-muted">
-                <Image src={attendanceData.photo} alt="Attendance photo" fill style={{ objectFit: 'cover' }} data-ai-hint="person selfie" />
+                <Image src={attendanceData.photo} alt="Foto kehadiran" fill style={{ objectFit: 'cover' }} data-ai-hint="person selfie" />
               </div>
               <div className="space-y-3 pt-2">
                 <div className="flex items-center space-x-3 text-sm font-medium text-accent">
                   <CheckCircle className="h-5 w-5" />
-                  <p>Verification Successful</p>
+                  <p>Verifikasi Berhasil</p>
                 </div>
                 <div className="flex items-start space-x-3 text-sm">
                   <Clock className="h-5 w-5 text-primary mt-0.5 shrink-0" />
@@ -139,9 +139,9 @@ export default function Home() {
             <CardFooter className="flex-col space-y-2 !pt-0">
               <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleSendEmail}>
                 <Mail className="mr-2 h-4 w-4" />
-                Send Report via Email
+                Kirim Laporan via Email
               </Button>
-              <Button variant="outline" className="w-full" onClick={reset}>Clock In Again</Button>
+              <Button variant="outline" className="w-full" onClick={reset}>Masuk Lagi</Button>
             </CardFooter>
           </>
         );
@@ -151,14 +151,14 @@ export default function Home() {
             <CardContent>
               <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>Kesalahan</AlertTitle>
                 <AlertDescription>
                   {error}
                 </AlertDescription>
               </Alert>
             </CardContent>
             <CardFooter>
-              <Button variant="outline" className="w-full" onClick={reset}>Try Again</Button>
+              <Button variant="outline" className="w-full" onClick={reset}>Coba Lagi</Button>
             </CardFooter>
           </>
         );
@@ -170,10 +170,10 @@ export default function Home() {
               <div className="p-4 bg-primary/10 rounded-full">
                 <Camera className="h-12 w-12 text-primary" />
               </div>
-              <p className="text-muted-foreground">Tap the button to capture your photo and location for attendance.</p>
+              <p className="text-muted-foreground">Ketuk tombol untuk mengambil foto dan lokasi Anda untuk absensi.</p>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" size="lg" onClick={() => inputFileRef.current?.click()}>Clock In</Button>
+              <Button className="w-full" size="lg" onClick={() => inputFileRef.current?.click()}>Masuk</Button>
             </CardFooter>
           </>
         );
@@ -186,7 +186,7 @@ export default function Home() {
       <Card className="w-full max-w-sm shadow-xl overflow-hidden rounded-2xl">
         <CardHeader className="text-center border-b bg-card">
           <CardTitle className="text-3xl font-headline text-primary">SnapAttend</CardTitle>
-          <CardDescription>Simple Photo & Location Attendance</CardDescription>
+          <CardDescription>Absensi Foto & Lokasi Sederhana</CardDescription>
         </CardHeader>
         {renderContent()}
       </Card>

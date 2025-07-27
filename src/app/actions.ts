@@ -7,7 +7,7 @@ export async function verifyFace(input: VerifyFaceAttendanceInput): Promise<Veri
         const result = await verifyFaceAttendance(input);
         return result;
     } catch (error) {
-        console.error("Error in verifyFaceAttendance flow:", error);
-        throw new Error("An AI error occurred during face verification.");
+        console.error("Kesalahan pada alur verifyFaceAttendance:", error);
+        throw new Error("Terjadi kesalahan AI saat verifikasi wajah.");
     }
 }
