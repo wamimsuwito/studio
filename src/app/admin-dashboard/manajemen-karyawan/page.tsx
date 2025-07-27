@@ -20,107 +20,186 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { useLokasi } from '@/context/LokasiContext';
+import { useKaryawan } from '@/context/KaryawanContext';
+import { useToast } from '@/hooks/use-toast';
+import type { Karyawan } from '@/context/KaryawanContext';
 
 export default function ManajemenKaryawanPage() {
   const { lokasiList } = useLokasi();
+  const { karyawanList, addKaryawan } = useKaryawan();
+  const { toast } = useToast();
+
   const [namaKaryawan, setNamaKaryawan] = useState('');
   const [nik, setNik] = useState('');
+  const [jabatan, setJabatan] = useState('');
+  const [lokasiId, setLokasiId] = useState('');
+
+  const resetForm = () => {
+    setNamaKaryawan('');
+    setNik('');
+    setJabatan('');
+    setLokasiId('');
+  };
+
+  const handleSimpanKaryawan = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!namaKaryawan || !nik || !jabatan || !lokasiId) {
+      toast({
+        variant: 'destructive',
+        title: 'Input Tidak Lengkap',
+        description: 'Semua kolom harus diisi untuk menambah karyawan.',
+      });
+      return;
+    }
+
+    const newKaryawan: Omit<Karyawan, 'id'> = {
+      nama: namaKaryawan,
+      nik: nik,
+      jabatan: jabatan,
+      lokasiId: parseInt(lokasiId, 10),
+    };
+
+    addKaryawan(newKaryawan);
+    toast({
+      title: 'Berhasil',
+      description: 'Karyawan baru berhasil ditambahkan.',
+    });
+    resetForm();
+  };
+  
+  const getLokasiName = (id: number) => {
+    return lokasiList.find(l => l.id === id)?.nama || 'Tidak Diketahui';
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <Card>
-          <CardHeader>
-            <CardTitle>Tambah Karyawan Baru</CardTitle>
-            <CardDescription>
-              Isi formulir di bawah ini untuk menambahkan karyawan baru ke sistem.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="nama-karyawan">Nama Karyawan</Label>
-                <Input 
-                  id="nama-karyawan" 
-                  placeholder="Contoh: JOHN DOE" 
-                  value={namaKaryawan}
-                  onChange={(e) => setNamaKaryawan(e.target.value.toUpperCase())}
-                  className="uppercase"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="nik">NIK</Label>
-                <Input 
-                  id="nik" 
-                  placeholder="Contoh: 1234567890" 
-                  value={nik}
-                  onChange={(e) => setNik(e.target.value.toUpperCase())}
-                  className="uppercase"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="jabatan">Jabatan</Label>
-                <Select>
-                  <SelectTrigger id="jabatan">
-                    <SelectValue placeholder="Pilih jabatan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="oprator">Oprator</SelectItem>
-                    <SelectItem value="sopir">Sopir</SelectItem>
-                    <SelectItem value="mekanik">Mekanik</SelectItem>
-                    <SelectItem value="helper">Helper</SelectItem>
-                    <SelectItem value="kepala-bp">Kepala BP</SelectItem>
-                    <SelectItem value="kepala-qc">Kepala QC</SelectItem>
-                    <SelectItem value="kepala-mekanik">Kepala Mekanik</SelectItem>
-                    <SelectItem value="kepala-workshop">Kepala Workshop</SelectItem>
-                    <SelectItem value="kepala-gudang">Kepala Gudang</SelectItem>
-                    <SelectItem value="admin-bp">Admin BP</SelectItem>
-                    <SelectItem value="admin-logistik">Admin Logistik</SelectItem>
-                    <SelectItem value="admin-qc">Admin QC</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="lokasi">Lokasi</Label>
-                <Select>
-                  <SelectTrigger id="lokasi">
-                    <SelectValue placeholder="Pilih lokasi kerja" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {lokasiList.length > 0 ? (
-                      lokasiList.map((lokasi) => (
-                        <SelectItem key={lokasi.id} value={lokasi.id.toString()}>
-                          {lokasi.nama}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="no-location" disabled>
-                        Belum ada lokasi, tambahkan di Manajemen Lokasi.
+      <Card>
+        <CardHeader>
+          <CardTitle>Tambah Karyawan Baru</CardTitle>
+          <CardDescription>
+            Isi formulir di bawah ini untuk menambahkan karyawan baru ke sistem.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form id="karyawan-form" onSubmit={handleSimpanKaryawan} className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="nama-karyawan">Nama Karyawan</Label>
+              <Input
+                id="nama-karyawan"
+                placeholder="Contoh: JOHN DOE"
+                value={namaKaryawan}
+                onChange={(e) => setNamaKaryawan(e.target.value.toUpperCase())}
+                className="uppercase"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="nik">NIK</Label>
+              <Input
+                id="nik"
+                placeholder="Contoh: 1234567890"
+                value={nik}
+                onChange={(e) => setNik(e.target.value.toUpperCase())}
+                className="uppercase"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="jabatan">Jabatan</Label>
+              <Select value={jabatan} onValueChange={setJabatan}>
+                <SelectTrigger id="jabatan">
+                  <SelectValue placeholder="Pilih jabatan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="OPRATOR">Oprator</SelectItem>
+                  <SelectItem value="SOPIR">Sopir</SelectItem>
+                  <SelectItem value="MEKANIK">Mekanik</SelectItem>
+                  <SelectItem value="HELPER">Helper</SelectItem>
+                  <SelectItem value="KEPALA BP">Kepala BP</SelectItem>
+                  <SelectItem value="KEPALA QC">Kepala QC</SelectItem>
+                  <SelectItem value="KEPALA MEKANIK">Kepala Mekanik</SelectItem>
+                  <SelectItem value="KEPALA WORKSHOP">Kepala Workshop</SelectItem>
+                  <SelectItem value="KEPALA GUDANG">Kepala Gudang</SelectItem>
+                  <SelectItem value="ADMIN BP">Admin BP</SelectItem>
+                  <SelectItem value="ADMIN LOGISTIK">Admin Logistik</SelectItem>
+                  <SelectItem value="ADMIN QC">Admin QC</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="lokasi">Lokasi</Label>
+              <Select value={lokasiId} onValueChange={setLokasiId}>
+                <SelectTrigger id="lokasi">
+                  <SelectValue placeholder="Pilih lokasi kerja" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lokasiList.length > 0 ? (
+                    lokasiList.map((lokasi) => (
+                      <SelectItem key={lokasi.id} value={lokasi.id.toString()}>
+                        {lokasi.nama}
                       </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter className="border-t px-6 py-4">
-            <Button>Simpan</Button>
-          </CardFooter>
-        </Card>
-        
-        {/* You can add another card here for displaying employee list */}
-        <Card>
-            <CardHeader>
-                <CardTitle>Daftar Karyawan</CardTitle>
-                <CardDescription>Daftar karyawan yang terdaftar dalam sistem.</CardDescription>
-            </CardHeader>
-            <CardContent>
+                    ))
+                  ) : (
+                    <SelectItem value="no-location" disabled>
+                      Belum ada lokasi, tambahkan di Manajemen Lokasi.
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="border-t px-6 py-4">
+          <Button type="submit" form="karyawan-form">Simpan</Button>
+        </CardFooter>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Daftar Karyawan</CardTitle>
+          <CardDescription>
+            Daftar karyawan yang terdaftar dalam sistem.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+            {karyawanList.length > 0 ? (
+                 <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Nama</TableHead>
+                            <TableHead>NIK</TableHead>
+                            <TableHead>Jabatan</TableHead>
+                            <TableHead>Lokasi</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {karyawanList.map((karyawan) => (
+                            <TableRow key={karyawan.id}>
+                                <TableCell className="font-medium">{karyawan.nama}</TableCell>
+                                <TableCell>{karyawan.nik}</TableCell>
+                                <TableCell>{karyawan.jabatan}</TableCell>
+                                <TableCell>{getLokasiName(karyawan.lokasiId)}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                 </Table>
+            ) : (
                 <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
                     <p className="text-lg">Belum ada data karyawan.</p>
-                    <p className="text-sm">Silakan tambahkan karyawan baru menggunakan formulir di sebelah kiri.</p>
+                    <p className="text-sm">
+                      Silakan tambahkan karyawan baru menggunakan formulir di sebelah kiri.
+                    </p>
                 </div>
-            </CardContent>
-        </Card>
+            )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import { Building, MapPin, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LokasiProvider } from '@/context/LokasiContext';
+import { KaryawanProvider } from '@/context/KaryawanContext';
 
 export default function AdminDashboardLayout({
   children,
@@ -26,50 +27,52 @@ export default function AdminDashboardLayout({
 
   return (
     <LokasiProvider>
+      <KaryawanProvider>
         <SidebarProvider>
-        <Sidebar>
+          <Sidebar>
             <SidebarHeader>
-            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 <h1 className="text-xl font-semibold">Dashboard Admin</h1>
-            </div>
+              </div>
             </SidebarHeader>
             <SidebarContent>
-            <SidebarMenu>
+              <SidebarMenu>
                 <SidebarMenuItem>
-                    <Link href="/admin-dashboard/manajemen-karyawan" className="w-full">
-                        <SidebarMenuButton tooltip="Manajemen Karyawan" isActive={pathname.startsWith('/admin-dashboard/manajemen-karyawan')}>
-                            <Building />
-                            Manajemen Karyawan
-                        </SidebarMenuButton>
-                    </Link>
+                  <Link href="/admin-dashboard/manajemen-karyawan" className="w-full">
+                    <SidebarMenuButton tooltip="Manajemen Karyawan" isActive={pathname.startsWith('/admin-dashboard/manajemen-karyawan')}>
+                      <Building />
+                      Manajemen Karyawan
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <Link href="/admin-dashboard/manajemen-lokasi" className="w-full">
-                        <SidebarMenuButton tooltip="Manajemen Lokasi" isActive={pathname.startsWith('/admin-dashboard/manajemen-lokasi')}>
-                            <MapPin />
-                            Manajemen Lokasi
-                        </SidebarMenuButton>
-                    </Link>
+                  <Link href="/admin-dashboard/manajemen-lokasi" className="w-full">
+                    <SidebarMenuButton tooltip="Manajemen Lokasi" isActive={pathname.startsWith('/admin-dashboard/manajemen-lokasi')}>
+                      <MapPin />
+                      Manajemen Lokasi
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <Link href="/admin-dashboard/manajemen-alat" className="w-full">
-                        <SidebarMenuButton tooltip="Manajemen Alat" isActive={pathname.startsWith('/admin-dashboard/manajemen-alat')}>
-                            <Wrench />
-                            Manajemen Alat
-                        </SidebarMenuButton>
-                    </Link>
+                  <Link href="/admin-dashboard/manajemen-alat" className="w-full">
+                    <SidebarMenuButton tooltip="Manajemen Alat" isActive={pathname.startsWith('/admin-dashboard/manajemen-alat')}>
+                      <Wrench />
+                      Manajemen Alat
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
-            </SidebarMenu>
+              </SidebarMenu>
             </SidebarContent>
-        </Sidebar>
-        <SidebarInset>
+          </Sidebar>
+          <SidebarInset>
             <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6">
-            <SidebarTrigger />
-            <h1 className="flex-1 text-lg font-semibold">Selamat Datang, Admin</h1>
+              <SidebarTrigger />
+              <h1 className="flex-1 text-lg font-semibold">Selamat Datang, Admin</h1>
             </header>
             <main className="flex-1 p-6">{children}</main>
-        </SidebarInset>
+          </SidebarInset>
         </SidebarProvider>
+      </KaryawanProvider>
     </LokasiProvider>
   );
 }
