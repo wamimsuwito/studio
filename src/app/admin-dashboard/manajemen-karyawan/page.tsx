@@ -47,10 +47,18 @@ export default function ManajemenKaryawanPage() {
                     <SelectValue placeholder="Pilih jabatan" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="staff">Staff</SelectItem>
-                    <SelectItem value="supervisor">Supervisor</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                    <SelectItem value="kadept">Kadept. Teknik</SelectItem>
+                    <SelectItem value="oprator">Oprator</SelectItem>
+                    <SelectItem value="sopir">Sopir</SelectItem>
+                    <SelectItem value="mekanik">Mekanik</SelectItem>
+                    <SelectItem value="helper">Helper</SelectItem>
+                    <SelectItem value="kepala-bp">Kepala BP</SelectItem>
+                    <SelectItem value="kepala-qc">Kepala QC</SelectItem>
+                    <SelectItem value="kepala-mekanik">Kepala Mekanik</SelectItem>
+                    <SelectItem value="kepala-workshop">Kepala Workshop</SelectItem>
+                    <SelectItem value="kepala-gudang">Kepala Gudang</SelectItem>
+                    <SelectItem value="admin-bp">Admin BP</SelectItem>
+                    <SelectItem value="admin-logistik">Admin Logistik</SelectItem>
+                    <SelectItem value="admin-qc">Admin QC</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
