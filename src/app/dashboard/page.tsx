@@ -98,9 +98,11 @@ export default function DashboardPage() {
                       <span className="text-4xl font-bold">A</span>
                   </Button>
                 </Link>
-                <Button variant="ghost" className="text-white">
-                  <Grid size={28} />
-                </Button>
+                <Link href="/menu">
+                  <Button variant="ghost" className="text-white">
+                    <Grid size={28} />
+                  </Button>
+                </Link>
             </div>
         </footer>
       </div>
