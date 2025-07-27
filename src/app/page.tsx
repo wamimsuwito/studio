@@ -22,10 +22,13 @@ export default function LoginPage() {
 
     // Simulate API call
     setTimeout(() => {
-      if (
-        (username === 'admin' && password === 'admin') ||
-        (username === 'oprator' && password === '1')
-      ) {
+      if (username === 'admin' && password === 'admin') {
+        toast({
+          title: 'Login Berhasil',
+          description: 'Anda akan diarahkan ke dashboard admin.',
+        });
+        router.push('/admin-dashboard');
+      } else if (username === 'oprator' && password === '1') {
         toast({
           title: 'Login Berhasil',
           description: 'Anda akan diarahkan ke dashboard.',
